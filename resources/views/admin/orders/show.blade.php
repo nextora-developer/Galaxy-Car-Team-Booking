@@ -85,12 +85,13 @@
         $serviceKey = strtolower(trim((string) $service));
 
         $serviceLabel = match ($serviceKey) {
-            'pickup_dropoff' => '接送',
-            'charter' => '包车',
-            'designated_driver' => '代驾',
-            'purchase' => '代购',
-            'big_car' => '大车',
-            'driver_only' => '司机',
+            'big_car' => '大车接送',
+            'small_car' => '小车接送',
+            'airport' => '机场接送',
+            'interstate' => '跨州长途',
+            'designated_driver' => '代驾服务',
+            'purchase' => '跑腿代办',
+            'translator' => '翻译陪同',
             default => $service,
         };
         $pickup = $order->pickup ?? '-';
@@ -379,40 +380,39 @@
                                 </div>
 
                                 <div class="space-y-2 lg:col-span-1 min-w-0">
-    <label class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
-        结算方式
-    </label>
+                                    <label class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+                                        结算方式
+                                    </label>
 
-    <div class="flex p-1 bg-slate-100 rounded-[1.25rem] min-h-14 items-center overflow-hidden">
-        @php
-            $curPay = strtolower((string) old('payment_type', $order->payment_type ?? 'cash'));
-        @endphp
+                                    <div
+                                        class="flex p-1 bg-slate-100 rounded-[1.25rem] min-h-14 items-center overflow-hidden">
+                                        @php
+                                            $curPay = strtolower(
+                                                (string) old('payment_type', $order->payment_type ?? 'cash'),
+                                            );
+                                        @endphp
 
-        @foreach (['cash' => '现金', 'credit' => '挂单', 'transfer' => '转账'] as $val => $label)
-            <label class="relative flex-1 min-w-0 cursor-pointer">
-                <input
-                    type="radio"
-                    name="payment_type"
-                    value="{{ $val }}"
-                    class="absolute inset-0 opacity-0 pointer-events-none peer"
-                    @checked($curPay === $val)
-                >
-                <span
-                    class="flex items-center justify-center h-11 w-full min-w-0 text-xs font-black rounded-xl transition-all
+                                        @foreach (['cash' => '现金', 'credit' => '挂单', 'transfer' => '转账'] as $val => $label)
+                                            <label class="relative flex-1 min-w-0 cursor-pointer">
+                                                <input type="radio" name="payment_type" value="{{ $val }}"
+                                                    class="absolute inset-0 opacity-0 pointer-events-none peer"
+                                                    @checked($curPay === $val)>
+                                                <span
+                                                    class="flex items-center justify-center h-11 w-full min-w-0 text-xs font-black rounded-xl transition-all
                            text-slate-500
                            peer-checked:bg-white
                            peer-checked:text-indigo-600
                            peer-checked:shadow-sm">
-                    {{ $label }}
-                </span>
-            </label>
-        @endforeach
-    </div>
+                                                    {{ $label }}
+                                                </span>
+                                            </label>
+                                        @endforeach
+                                    </div>
 
-    @error('payment_type')
-        <p class="text-xs font-bold text-rose-500 ml-1">{{ $message }}</p>
-    @enderror
-</div>
+                                    @error('payment_type')
+                                        <p class="text-xs font-bold text-rose-500 ml-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
 
                                 <div class="space-y-2">
                                     <label class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] ml-1">

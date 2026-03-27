@@ -59,12 +59,14 @@
         };
 
         $serviceLabel = fn($v) => match ($v) {
-            'pickup_dropoff' => '接送',
-            'charter' => '包车',
+            'big_car' => '大车接送',
+            'small_car' => '小车接送',
             'designated_driver' => '代驾',
-            'purchase' => '代购',
-            'big_car' => '大车',
-            'driver_only' => '司机',
+            'airport' => '机场接送',
+            'interstate' => '跨州长途',
+            'big_car' => '多人包车',
+            'purchase' => '跑腿代办',
+            'translator' => '翻译陪同',
             default => '服务',
         };
 

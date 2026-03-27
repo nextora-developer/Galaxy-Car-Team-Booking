@@ -17,7 +17,7 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'service_type'  => ['required', 'in:pickup_dropoff,charter,designated_driver,purchase,big_car,driver_only'],
+            'service_type'  => ['required', 'in:big_car,small_car,airport,interstate,designated_driver,purchase,translator'],
             'pickup'        => ['required', 'string', 'max:255'],
             'dropoffs'      => ['required', 'array', 'min:1'],
             'dropoffs.*'    => ['required', 'string', 'max:255'],

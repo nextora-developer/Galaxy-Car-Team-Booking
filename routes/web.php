@@ -34,17 +34,17 @@ use App\Http\Controllers\Admin\ManagerController as AdminManagerController;
 use Illuminate\Support\Facades\Route;
 
 
-// Route::get('/', function () {
-//     // ✅ customer 一进来先 login/register
-//     // 如果已登录：按 role 导去各自 dashboard
-//     return auth()->check()
-//         ? redirect()->route('home')
-//         : redirect()->route('login');
-// });
-
 Route::get('/', function () {
-    return view('landing');
-})->name('landing');
+    // ✅ customer 一进来先 login/register
+    // 如果已登录：按 role 导去各自 dashboard
+    return auth()->check()
+        ? redirect()->route('home')
+        : redirect()->route('login');
+});
+
+// Route::get('/', function () {
+//     return view('landing');
+// })->name('landing');
 
 // Legal pages
 Route::view('/terms', 'terms')->name('terms');

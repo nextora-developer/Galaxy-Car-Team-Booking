@@ -410,12 +410,13 @@
                                 $serviceKey = strtolower(trim((string) ($s->service_type ?? '')));
 
                                 $serviceLabel = match ($serviceKey) {
-                                    'pickup_dropoff' => '接送',
-                                    'charter' => '包车',
-                                    'designated_driver' => '代驾',
-                                    'purchase' => '代购',
-                                    'big_car' => '大车',
-                                    'driver_only' => '司机',
+                                    'big_car' => '大车接送',
+                                    'small_car' => '小车接送',
+                                    'airport' => '机场接送',
+                                    'interstate' => '跨州长途',
+                                    'designated_driver' => '代驾服务',
+                                    'purchase' => '跑腿代办',
+                                    'translator' => '翻译陪同',
                                     default => '标准服务',
                                 };
                             @endphp

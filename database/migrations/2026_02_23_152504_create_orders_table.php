@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('manager_id')->nullable()->constrained('users')->nullOnDelete();
 
             // booking info
-            $table->string('service_type', 40); // pickup_dropoff/charter/designated_driver/purchase/big_car/driver_only
+            $table->string('service_type', 40);
             $table->string('pickup', 255);
             $table->string('dropoff', 255);
             $table->text('note')->nullable();

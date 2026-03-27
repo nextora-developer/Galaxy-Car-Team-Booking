@@ -53,12 +53,13 @@ class SalesReportExport implements FromQuery, WithHeadings, WithMapping
     public function map($order): array
     {
         $serviceLabel = match (strtolower((string) $order->service_type)) {
-            'pickup_dropoff' => '接送',
-            'charter' => '包车',
-            'designated_driver' => '代驾',
-            'purchase' => '代购',
-            'big_car' => '大车',
-            'driver_only' => '司机',
+            'big_car' => '大车接送',
+            'small_car' => '小车接送',
+            'airport' => '机场接送',
+            'interstate' => '跨州长途',
+            'designated_driver' => '代驾服务',
+            'purchase' => '跑腿代办',
+            'translator' => '翻译陪同',
             default => $order->service_type ?: '—',
         };
 

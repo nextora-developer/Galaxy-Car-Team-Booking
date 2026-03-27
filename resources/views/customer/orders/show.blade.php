@@ -12,7 +12,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                 </svg>
             </a>
-            
+
             <div class="text-center">
                 <h1 class="text-base font-black text-slate-900">订单详情</h1>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">编号：#{{ $order->id }}</p>
@@ -248,12 +248,13 @@
 
                     @php
                         $serviceMap = [
-                            'pickup_dropoff' => '接送',
-                            'charter' => '包车',
-                            'designated_driver' => '代驾',
-                            'purchase' => '代购',
-                            'big_car' => '大车',
-                            'driver_only' => '司机',
+                            'big_car' => '大车接送',
+                            'small_car' => '小车接送',
+                            'airport' => '机场接送',
+                            'interstate' => '跨州长途',
+                            'designated_driver' => '代驾服务',
+                            'purchase' => '跑腿代办',
+                            'translator' => '翻译陪同',
                         ];
                     @endphp
 
