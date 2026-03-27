@@ -282,19 +282,23 @@
                                 </div>
 
                                 <div class="space-y-1 px-1">
-                                    <a href="#"
-                                        class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition group">
+                                    <a href="https://wa.me/60167053288" target="_blank"
+                                        class="flex items-center gap-3 p-3 rounded-2xl hover:bg-emerald-50 transition group">
                                         <div
-                                            class="h-10 w-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+                                            class="h-10 w-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center group-active:scale-90 transition-transform">
+
+                                            {{-- Headset Icon --}}
                                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M3 12a9 9 0 0118 0v3a3 3 0 01-3 3h-1v-6h4" />
+                                                    d="M3 12a9 9 0 0118 0v3a3 3 0 01-3 3h-1v-6h4m-18 0h4v6H6a3 3 0 01-3-3v-3z" />
                                             </svg>
+
                                         </div>
                                         <div>
-                                            <div class="text-sm font-black text-slate-800">技术支持</div>
-                                            <div class="text-[11px] font-semibold text-slate-400">联系客服 · 处理问题</div>
+                                            <div class="text-sm font-black text-slate-800">客服中心</div>
+                                            <div class="text-[11px] font-semibold text-slate-400">WhatsApp · 电话支持
+                                            </div>
                                         </div>
                                     </a>
 

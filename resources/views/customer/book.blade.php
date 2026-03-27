@@ -67,7 +67,8 @@
                 'key' => 'small_car',
                 'label' => '小车接送',
                 'desc' => '点对点接送',
-                'icon' => 'M16,6l3,4h2c1.11,0,2,0.89,2,2v3h-2c0,1.66-1.34,3-3,3s-3-1.34-3-3H9c0,1.66-1.34,3-3,3s-3-1.34-3-3H1v-3c0-1.11,0.89-2,2-2   l3-4H16 M10.5,7.5H6.75L4.86,10h5.64V7.5 M12,7.5V10h5.14l-1.89-2.5H12 M6,13.5c-0.83,0-1.5,0.67-1.5,1.5s0.67,1.5,1.5,1.5   s1.5-0.67,1.5-1.5S6.83,13.5,6,13.5 M18,13.5c-0.83,0-1.5,0.67-1.5,1.5s0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5S18.83,13.5,18,13.5z',
+                'icon' =>
+                    'M16,6l3,4h2c1.11,0,2,0.89,2,2v3h-2c0,1.66-1.34,3-3,3s-3-1.34-3-3H9c0,1.66-1.34,3-3,3s-3-1.34-3-3H1v-3c0-1.11,0.89-2,2-2   l3-4H16 M10.5,7.5H6.75L4.86,10h5.64V7.5 M12,7.5V10h5.14l-1.89-2.5H12 M6,13.5c-0.83,0-1.5,0.67-1.5,1.5s0.67,1.5,1.5,1.5   s1.5-0.67,1.5-1.5S6.83,13.5,6,13.5 M18,13.5c-0.83,0-1.5,0.67-1.5,1.5s0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5S18.83,13.5,18,13.5z',
             ],
             [
                 'key' => 'airport',
@@ -97,7 +98,8 @@
                 'key' => 'translator',
                 'label' => '翻译陪同',
                 'desc' => '沟通协助',
-                'icon' => 'm10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802',
+                'icon' =>
+                    'm10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802',
             ],
         ];
     @endphp
@@ -276,15 +278,24 @@
 
                             {{-- Add button --}}
                             <div class="pt-2">
-                                <button type="button" @click="addDropoff()"
-                                    class="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200
-                   text-xs font-black uppercase tracking-widest hover:bg-emerald-100 transition-all">
+                                <button type="button" @click="addDropoff()" :disabled="dropoffs.length >= 3"
+                                    class="inline-flex items-center gap-2 px-4 py-3 rounded-2xl border
+                                            text-xs font-black uppercase tracking-widest transition-all
+                                            bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100
+                                            disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-emerald-50">
+
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                         stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
                                     </svg>
+
                                     添加下车点
                                 </button>
+
+                                <!-- optional 提示 -->
+                                <p x-show="dropoffs.length >= 3" class="mt-2 text-[11px] text-rose-500 font-semibold">
+                                    最多只能添加 3 个下车点
+                                </p>
                             </div>
                         </div>
 

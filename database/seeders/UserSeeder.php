@@ -105,8 +105,8 @@ class UserSeeder extends Seeder
             ['email' => 'user@user.com'],
             [
                 'name' => 'Test User',
-                'full_name' => 'Sia Kai Fong',
-                'phone' => '0167219945',
+                'full_name' => 'Lau Tak Wah',
+                'phone' => '0167223344',
                 'password' => Hash::make('password'),
                 'role' => 'user',
                 'shift' => null,

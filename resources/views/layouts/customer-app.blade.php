@@ -329,7 +329,7 @@
                                     </a> --}}
 
                                     {{-- 客服中心 --}}
-                                    <a href="#"
+                                    <a href="https://wa.me/60167053288" target="_blank"
                                         class="flex items-center gap-3 p-3 rounded-2xl hover:bg-emerald-50 transition group">
                                         <div
                                             class="h-10 w-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center group-active:scale-90 transition-transform">
@@ -350,12 +350,11 @@
                                     </a>
 
                                     {{-- 服务条款 --}}
-                                    <a href="#"
+                                    {{-- <a href="#"
                                         class="flex items-center gap-3 p-3 rounded-2xl hover:bg-amber-50 transition group">
                                         <div
                                             class="h-10 w-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center group-active:scale-90 transition-transform">
 
-                                            {{-- Document Icon --}}
                                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -367,15 +366,14 @@
                                             <div class="text-sm font-black text-slate-800">服务条款</div>
                                             <div class="text-[11px] font-semibold text-slate-400">使用规范说明</div>
                                         </div>
-                                    </a>
+                                    </a> --}}
 
                                     {{-- 隐私政策 --}}
-                                    <a href="#"
+                                    {{-- <a href="#"
                                         class="flex items-center gap-3 p-3 rounded-2xl hover:bg-indigo-50 transition group">
                                         <div
                                             class="h-10 w-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center group-active:scale-90 transition-transform">
 
-                                            {{-- Shield Lock Icon --}}
                                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -389,7 +387,7 @@
                                             <div class="text-sm font-black text-slate-800">隐私政策</div>
                                             <div class="text-[11px] font-semibold text-slate-400">数据保护政策</div>
                                         </div>
-                                    </a>
+                                    </a> --}}
 
                                     <div class="h-px bg-slate-100 my-3 mx-2"></div>
 
