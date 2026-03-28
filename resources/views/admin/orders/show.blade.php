@@ -377,7 +377,7 @@
                                             <option value="">点击选择司机...</option>
                                             @foreach ($drivers as $d)
                                                 <option value="{{ $d->id }}" @selected((int) old('driver_id', $order->driver_id) === (int) $d->id)>
-                                                    {{ $d->name }}
+                                                    {{ $d->full_name }}
                                                     {{ $d->shift ? '(' . ($d->shift === 'day' ? '白班' : '夜班') . ')' : '' }}
                                                 </option>
                                             @endforeach

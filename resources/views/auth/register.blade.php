@@ -10,12 +10,12 @@
 
         <div class="relative w-full max-w-sm">
 
-            <div class="rounded-[2.5rem] bg-white/10 backdrop-blur-xl border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.6)] px-7 py-10">
+            <div
+                class="rounded-[2.5rem] bg-white/10 backdrop-blur-xl border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.6)] px-7 py-10">
 
                 {{-- Logo --}}
                 <div class="flex justify-center">
-                    <img src="{{ asset('images/galaxycarteamlogo.png') }}"
-                        class="h-28 w-28 object-contain">
+                    <img src="{{ asset('images/galaxycarteamlogo.png') }}" class="h-28 w-28 object-contain">
                 </div>
 
                 {{-- Title --}}
@@ -27,10 +27,18 @@
                 <form method="POST" action="{{ route('register') }}" class="space-y-5">
                     @csrf
 
-                    {{-- Name --}}
+                    {{-- Username --}}
+                    <div>
+                        <input id="name" name="name" type="text" value="{{ old('name') }}" required
+                            placeholder="用户名"
+                            class="w-full h-14 rounded-2xl bg-white/10 border border-white/10 text-white placeholder:text-slate-400 px-5 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-400 backdrop-blur" />
+                        <x-input-error :messages="$errors->get('name')" class="mt-1" />
+                    </div>
+
+                    {{-- Full Name --}}
                     <div>
                         <input id="full_name" name="full_name" type="text" value="{{ old('full_name') }}" required
-                            placeholder="姓名"
+                            placeholder="真实姓名"
                             class="w-full h-14 rounded-2xl bg-white/10 border border-white/10 text-white placeholder:text-slate-400 px-5 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-400 backdrop-blur" />
                         <x-input-error :messages="$errors->get('full_name')" class="mt-1" />
                     </div>
@@ -53,8 +61,7 @@
 
                     {{-- Password --}}
                     <div>
-                        <input id="password" name="password" type="password" required
-                            placeholder="密码"
+                        <input id="password" name="password" type="password" required placeholder="密码"
                             class="w-full h-14 rounded-2xl bg-white/10 border border-white/10 text-white placeholder:text-slate-400 px-5 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-400 backdrop-blur" />
                         <x-input-error :messages="$errors->get('password')" class="mt-1" />
                     </div>

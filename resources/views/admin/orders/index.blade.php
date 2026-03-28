@@ -335,7 +335,7 @@
                                             @foreach ($drivers as $d)
                                                 <option value="{{ $d->id }}"
                                                     {{ old('driver_id', $order->driver_id ?? '') == $d->id ? 'selected' : '' }}>
-                                                    {{ $d->name }}{{ $d->shift ? '（' . ($d->shift === 'day' ? '白班' : '夜班') . '）' : '' }}
+                                                    {{ $d->full_name }}{{ $d->shift ? '（' . ($d->shift === 'day' ? '白班' : '夜班') . '）' : '' }}
                                                 </option>
                                             @endforeach
                                         </select>

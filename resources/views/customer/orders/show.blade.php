@@ -251,11 +251,11 @@
                         <div
                             class="h-14 w-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-xl
                                shadow-[0_16px_38px_rgba(15,23,42,0.20)]">
-                            {{ substr($order->driver->name, 0, 1) }}
+                            {{ substr($order->driver->full_name, 0, 1) }}
                         </div>
 
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-black text-slate-900 truncate">{{ $order->driver->name }}</h3>
+                            <h3 class="font-black text-slate-900 truncate">{{ $order->driver->full_name }}</h3>
                             <p class="text-xs font-black text-slate-600 uppercase tracking-tight truncate">
                                 {{ $order->driver->phone }}
                             </p>
