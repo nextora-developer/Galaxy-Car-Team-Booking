@@ -238,7 +238,14 @@
 
             @php
                 $total = max(1, (int) $totalOrders);
+
                 $bars = [
+                    [
+                        'label' => '预约中', // 👈 新增
+                        'val' => $statusCounts['scheduled'] ?? 0,
+                        'color' => 'bg-orange-400',
+                        'ring' => 'ring-orange-400/20',
+                    ],
                     [
                         'label' => '待派单',
                         'val' => $statusCounts['pending'] ?? 0,

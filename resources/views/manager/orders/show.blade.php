@@ -309,8 +309,8 @@
 
         {{-- Right: Assignment Panel --}}
         @php
-            $canEditAssign = in_array($order->status, ['pending', 'assigned']);
-            $canCancelOrder = in_array($order->status, ['pending', 'assigned', 'on_the_way', 'arrived']);
+            $canEditAssign = in_array($order->status, ['pending', 'assigned', 'scheduled']);
+            $canCancelOrder = in_array($order->status, ['pending', 'assigned', 'scheduled', 'on_the_way', 'arrived']);
 
             $serviceTypes = [
                 'big_car' => '大车接送',
@@ -326,162 +326,224 @@
         @endphp
 
         <div class="lg:col-span-5">
-            <div
-                class="bg-slate-900 rounded-[2.5rem] p-8
-            shadow-[0_22px_60px_rgba(15,23,42,0.25)]
-            sticky top-24">
-                <div class="flex items-center justify-between gap-3 mb-8">
-                    <h3 class="text-white text-lg font-black">
-                        {{ $order->driver_id ? '编辑派单' : '派单操作' }}
-                    </h3>
+    <div
+        class="bg-slate-900 rounded-[2.5rem] p-8
+        shadow-[0_22px_60px_rgba(15,23,42,0.25)]
+        sticky top-24">
 
-                    <span
-                        class="inline-flex items-center px-3 py-1 rounded-full 
-             text-sm font-bold uppercase tracking-widest
-             bg-indigo-500/10 border border-indigo-500/20 text-indigo-300
-             backdrop-blur-sm transition-all hover:bg-indigo-500/20">
-                        {{ $serviceLabel }}
-                    </span>
+        <div class="flex items-center justify-between gap-3 mb-8">
+            <h3 class="text-white text-lg font-black">
+                @if ($order->driver_id)
+                    编辑派单
+                @elseif (!empty($isScheduled) && $isScheduled)
+                    预约派单
+                @else
+                    派单操作
+                @endif
+            </h3>
+
+            <span
+                class="inline-flex items-center px-3 py-1 rounded-full 
+                text-sm font-bold uppercase tracking-widest
+                bg-indigo-500/10 border border-indigo-500/20 text-indigo-300
+                backdrop-blur-sm transition-all hover:bg-indigo-500/20">
+                {{ $serviceLabel }}
+            </span>
+        </div>
+
+        @unless ($canEditAssign)
+            <div class="mb-6 p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                <span class="text-xl">🔒</span>
+                <p class="text-xs font-bold text-slate-400">
+                    当前订单状态为 {{ $order->status }}，无法修改派单信息。
+                </p>
+            </div>
+        @endunless
+
+        @if (!empty($isScheduled) && $isScheduled && $canEditAssign)
+            <div
+                class="mb-6 rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-4 flex items-start gap-3">
+                <span class="text-base leading-none mt-0.5">🕒</span>
+                <div>
+                    <p class="text-sm font-black text-amber-200">这是预约订单</p>
+                    <p class="text-xs font-semibold text-amber-100/80 mt-1">
+                        可先保存订单，不安排司机也可以，之后再派单。
+                    </p>
+                </div>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('manager.orders.assign', $order) }}" class="space-y-6">
+            @csrf
+            @method('PATCH')
+
+            {{-- Driver Select --}}
+            <div class="space-y-2">
+                <div class="flex items-center justify-between gap-3">
+                    <label class="text-xs font-black text-slate-200 uppercase tracking-widest ml-1">
+                        选择司机
+                    </label>
+
+                    @if (!empty($isScheduled) && $isScheduled)
+                        <span class="text-[10px] font-black uppercase tracking-widest text-amber-300/80">
+                            可留空稍后安排
+                        </span>
+                    @endif
                 </div>
 
-                @unless ($canEditAssign)
-                    <div class="mb-6 p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
-                        <span class="text-xl">🔒</span>
-                        <p class="text-xs font-bold text-slate-400">
-                            当前订单状态为 {{ $order->status }}，无法修改派单信息。
-                        </p>
-                    </div>
-                @endunless
+                <select name="driver_id"
+                    class="w-full bg-slate-800/80 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition disabled:opacity-50"
+                    {{ !$canEditAssign ? 'disabled' : '' }}>
+                    <option value="">
+                        {{ !empty($isScheduled) && $isScheduled ? '暂不安排司机...' : '点击选择司机...' }}
+                    </option>
 
-                <form method="POST" action="{{ route('manager.orders.assign', $order) }}" class="space-y-6">
-                    @csrf
-                    @method('PATCH')
+                    @foreach ($drivers as $d)
+                        <option value="{{ $d->id }}"
+                            {{ old('driver_id', $order->driver_id) == $d->id ? 'selected' : '' }}>
+                            {{ $d->full_name ?: $d->name }}{{ $d->shift ? ' (' . ucfirst($d->shift) . ')' : '' }}
+                        </option>
+                    @endforeach
+                </select>
 
-                    {{-- Driver Select --}}
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-slate-200 uppercase tracking-widest ml-1">选择司机</label>
-                        <select name="driver_id"
-                            class="w-full bg-slate-800/80 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white
-                   focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition disabled:opacity-50"
-                            {{ !$canEditAssign ? 'disabled' : '' }}>
-                            <option value="">点击选择司机...</option>
-                            @foreach ($drivers as $d)
-                                <option value="{{ $d->id }}"
-                                    {{ old('driver_id', $order->driver_id) == $d->id ? 'selected' : '' }}>
-                                    {{ $d->full_name ?? $d->name }} {{ $d->shift ? '(' . ucfirst($d->shift) . ')' : '' }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                        @error('driver_id')
-                            <p class="text-xs text-rose-400 font-bold mt-2">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Payment Type Chips --}}
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-slate-200 uppercase tracking-widest ml-1">付款方式</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            @foreach ($payOptions as $value => $label)
-                                <label class="relative">
-                                    <input type="radio" name="payment_type" value="{{ $value }}"
-                                        class="peer sr-only"
-                                        {{ old('payment_type', $order->payment_type ?? 'cash') === $value ? 'checked' : '' }}
-                                        {{ !$canEditAssign ? 'disabled' : '' }}>
-                                    <div
-                                        class="py-3 text-center rounded-xl border border-white/10
-                               bg-slate-800/80 text-slate-300 text-xs font-black cursor-pointer
-                               peer-checked:bg-white peer-checked:text-slate-900
-                               peer-checked:shadow-[0_16px_34px_rgba(255,255,255,0.10)]
-                               transition-all">
-                                        {{ $label }}
-                                    </div>
-                                </label>
-                            @endforeach
-                        </div>
-
-                        @error('payment_type')
-                            <p class="text-xs text-rose-400 font-bold mt-2">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Amount --}}
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-slate-200 uppercase tracking-widest ml-1">收费金额 (RM)</label>
-                        <div class="relative">
-                            <span
-                                class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-black text-sm">RM</span>
-                            <input type="number" step="0.01" name="amount"
-                                value="{{ old('amount', $order->amount) }}"
-                                class="w-full bg-slate-800/80 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-xl font-black text-white
-                       focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition
-                       placeholder:text-slate-600 disabled:opacity-50"
-                                placeholder="0.00" {{ !$canEditAssign ? 'disabled' : '' }}>
-                        </div>
-
-                        @error('amount')
-                            <p class="text-xs text-rose-400 font-bold mt-2">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <button type="submit"
-                        class="w-full py-5 rounded-[1.5rem] bg-indigo-500 hover:bg-indigo-400 text-white font-black tracking-widest text-sm
-               shadow-[0_18px_50px_rgba(99,102,241,0.35)]
-               active:scale-[0.98] transition-all disabled:hidden"
-                        {{ !$canEditAssign ? 'disabled' : '' }}>
-                        {{ $order->driver_id ? '更新派单' : '立即派单' }}
-                    </button>
-                </form>
-
-                @if ($canCancelOrder)
-                    <form method="POST" action="{{ route('manager.orders.cancel', $order) }}" class="mt-3"
-                        onsubmit="return confirm('确定要取消这个订单吗？');">
-                        @csrf
-                        @method('PATCH')
-
-                        <button type="submit"
-                            class="w-full py-4 rounded-[1.5rem] bg-rose-500/90 hover:bg-rose-500 text-white font-black tracking-widest text-sm
-                   shadow-[0_18px_50px_rgba(244,63,94,0.28)]
-                   active:scale-[0.98] transition-all">
-                            取消订单
-                        </button>
-                    </form>
+                @if ($drivers->isEmpty())
+                    <p class="text-[11px] font-bold text-amber-300 mt-2">
+                        当前没有可用司机。
+                        {{ !empty($isScheduled) && $isScheduled ? '这是预约订单，你可以先保存，稍后再安排司机。' : '即时单请稍后再试。' }}
+                    </p>
                 @endif
 
-                @if ($order->driver)
-                    <div class="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div
-                                class="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center font-black text-white
-                               shadow-[0_16px_38px_rgba(99,102,241,0.40)]">
-                                {{ substr($order->driver->name, 0, 1) }}
-                            </div>
-                            <div class="min-w-0">
-                                <div class="text-[10px] font-black text-slate-400 uppercase">已指派司机</div>
-                                <div class="text-sm font-black text-white mt-0.5 truncate">
-                                    {{ $order->driver->name }}
-                                </div>
-                                <div class="text-xs text-slate-400 mt-1">
-                                    付款方式：{{ $payOptions[$order->payment_type] ?? '-' }} · 金额：RM
-                                    {{ number_format((float) $order->amount, 2) }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <a href="tel:{{ $order->driver->phone ?? '' }}"
-                            class="h-8 w-8 rounded-full border border-white/12 bg-white/5
-                           flex items-center justify-center text-slate-300 hover:text-white transition"
-                            aria-label="联系司机">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                stroke-width="2.5">
-                                <path
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
-                        </a>
-                    </div>
-                @endif
+                @error('driver_id')
+                    <p class="text-xs text-rose-400 font-bold mt-2">{{ $message }}</p>
+                @enderror
             </div>
-        </div>
+
+            {{-- Payment Type Chips --}}
+            <div class="space-y-2">
+                <label class="text-xs font-black text-slate-200 uppercase tracking-widest ml-1">付款方式</label>
+                <div class="grid grid-cols-3 gap-2">
+                    @foreach ($payOptions as $value => $label)
+                        <label class="relative">
+                            <input type="radio" name="payment_type" value="{{ $value }}"
+                                class="peer sr-only"
+                                {{ old('payment_type', $order->payment_type ?? 'cash') === $value ? 'checked' : '' }}
+                                {{ !$canEditAssign ? 'disabled' : '' }}>
+                            <div
+                                class="py-3 text-center rounded-xl border border-white/10
+                                bg-slate-800/80 text-slate-300 text-xs font-black cursor-pointer
+                                peer-checked:bg-white peer-checked:text-slate-900
+                                peer-checked:shadow-[0_16px_34px_rgba(255,255,255,0.10)]
+                                transition-all">
+                                {{ $label }}
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+
+                @error('payment_type')
+                    <p class="text-xs text-rose-400 font-bold mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Amount --}}
+            <div class="space-y-2">
+                <label class="text-xs font-black text-slate-200 uppercase tracking-widest ml-1">收费金额 (RM)</label>
+                <div class="relative">
+                    <span
+                        class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-black text-sm">RM</span>
+                    <input type="number" step="0.01" name="amount"
+                        value="{{ old('amount', $order->amount) }}"
+                        class="w-full bg-slate-800/80 border border-white/10 rounded-2xl pl-12 pr-5 py-4 text-xl font-black text-white
+                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition
+                        placeholder:text-slate-600 disabled:opacity-50"
+                        placeholder="0.00" {{ !$canEditAssign ? 'disabled' : '' }}>
+                </div>
+
+                @error('amount')
+                    <p class="text-xs text-rose-400 font-bold mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <button type="submit"
+                class="w-full py-5 rounded-[1.5rem] bg-indigo-500 hover:bg-indigo-400 text-white font-black tracking-widest text-sm
+                shadow-[0_18px_50px_rgba(99,102,241,0.35)]
+                active:scale-[0.98] transition-all disabled:hidden"
+                {{ !$canEditAssign ? 'disabled' : '' }}>
+                @if ($order->driver_id)
+                    更新派单
+                @elseif (!empty($isScheduled) && $isScheduled)
+                    保存预约订单
+                @else
+                    立即派单
+                @endif
+            </button>
+        </form>
+
+        @if ($canCancelOrder)
+            <form method="POST" action="{{ route('manager.orders.cancel', $order) }}" class="mt-3"
+                onsubmit="return confirm('确定要取消这个订单吗？');">
+                @csrf
+                @method('PATCH')
+
+                <button type="submit"
+                    class="w-full py-4 rounded-[1.5rem] bg-rose-500/90 hover:bg-rose-500 text-white font-black tracking-widest text-sm
+                    shadow-[0_18px_50px_rgba(244,63,94,0.28)]
+                    active:scale-[0.98] transition-all">
+                    取消订单
+                </button>
+            </form>
+        @endif
+
+        @if ($order->driver)
+            <div class="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div
+                        class="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center font-black text-white
+                        shadow-[0_16px_38px_rgba(99,102,241,0.40)]">
+                        {{ strtoupper(substr($order->driver->full_name ?: $order->driver->name, 0, 1)) }}
+                    </div>
+
+                    <div class="min-w-0">
+                        <div class="text-[10px] font-black text-slate-400 uppercase">已指派司机</div>
+                        <div class="text-sm font-black text-white mt-0.5 truncate">
+                            {{ $order->driver->full_name ?: $order->driver->name }}
+                        </div>
+                        <div class="text-xs text-slate-400 mt-1">
+                            付款方式：{{ $payOptions[$order->payment_type] ?? '-' }} · 金额：RM
+                            {{ number_format((float) $order->amount, 2) }}
+                        </div>
+                    </div>
+                </div>
+
+                <a href="tel:{{ $order->driver->phone ?? '' }}"
+                    class="h-8 w-8 rounded-full border border-white/12 bg-white/5
+                    flex items-center justify-center text-slate-300 hover:text-white transition"
+                    aria-label="联系司机">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                </a>
+            </div>
+        @elseif (!empty($isScheduled) && $isScheduled)
+            <div class="mt-8 pt-6 border-t border-white/10">
+                <div class="rounded-2xl bg-white/5 border border-white/10 px-4 py-4">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        当前状态
+                    </div>
+                    <div class="mt-1 text-sm font-black text-white">
+                        尚未安排司机
+                    </div>
+                    <div class="mt-1 text-xs text-slate-400">
+                        这是预约订单，可在接近出发时间时再安排司机。
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
 
     </div>
 @endsection

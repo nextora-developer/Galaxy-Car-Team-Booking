@@ -81,11 +81,15 @@ class OrderController extends Controller
             'review.user',
         ]);
 
+        $busyStatuses = ['assigned', 'on_the_way', 'arrived', 'in_trip'];
+
         $driversQuery = User::query()
             ->where('role', 'driver')
             ->where('driver_status', 'approved')
-            // ✅ 只显示在线 + 还活着（5分钟内有心跳）
             ->where('is_online', 1)
+            ->whereDoesntHave('driverOrders', function ($q) use ($busyStatuses) {
+                $q->whereIn('status', $busyStatuses);
+            })
             ->orderBy('name');
 
         // ✅ 默认只显示同 shift driver；点击 All Drivers 才显示全部
@@ -112,20 +116,50 @@ class OrderController extends Controller
 
         $drivers = $driversQuery->get(['id', 'name', 'full_name', 'shift']);
 
-        return view('manager.orders.show', compact('order', 'drivers'));
+        $isScheduled = !empty($order->scheduled_at) && Carbon::parse($order->scheduled_at)->isFuture();
+
+        return view('manager.orders.show', compact('order', 'drivers', 'isScheduled'));
     }
 
     public function assign(Request $request, Order $order)
     {
         $manager = $request->user();
 
+        $isScheduled = !empty($order->scheduled_at) && Carbon::parse($order->scheduled_at)->isFuture();
+
         $data = $request->validate([
-            'driver_id'   => ['required', 'integer', 'exists:users,id'],
+            'driver_id'    => [$isScheduled ? 'nullable' : 'required', 'integer', 'exists:users,id'],
             'payment_type' => ['required', Rule::in(['cash', 'credit', 'transfer'])],
-            'amount'      => ['required', 'numeric', 'min:0'],
+            'amount' => [$isScheduled ? 'nullable' : 'required', 'numeric', 'min:0'],
         ]);
 
-        // ✅ 确认选的是 driver
+        // 只允许 pending / assigned / scheduled 可编辑
+        if (!in_array($order->status, ['pending', 'assigned', 'scheduled'])) {
+            return back()->withErrors([
+                'driver_id' => '该订单已无法编辑。'
+            ])->withInput();
+        }
+
+        // =========================
+        // 预约单：允许暂时不选司机
+        // =========================
+        if ($isScheduled && empty($data['driver_id'])) {
+            $order->update([
+                'driver_id'    => null,
+                'manager_id'   => $manager->id,
+                'payment_type' => $data['payment_type'],
+                'amount'       => $data['amount'],
+                'status'       => 'scheduled',
+            ]);
+
+            return redirect()
+                ->route('manager.orders.show', $order)
+                ->with('status', '预约订单已保存，司机可稍后安排。');
+        }
+
+        // =========================
+        // 即时单 / 已选司机：正常派单
+        // =========================
         $driver = User::query()
             ->where('id', $data['driver_id'])
             ->where('role', 'driver')
@@ -137,16 +171,11 @@ class OrderController extends Controller
                 ->withInput();
         }
 
-        // ✅ 默认限制：manager 只能派同 shift 的 driver（要允许跨班次就删掉）
+        // manager 只能派同 shift 的司机
         if (!empty($manager->shift) && !empty($driver->shift) && $driver->shift !== $manager->shift) {
-            return back()->withErrors(['driver_id' => '所选司机不在您的班次内。'])->withInput();
-        }
-
-        // ✅ 只允许 pending 才能派（你要允许改派就改掉这段）
-        if (!in_array($order->status, ['pending', 'assigned'])) {
-            return back()->withErrors([
-                'driver_id' => '该订单已无法编辑。'
-            ])->withInput();
+            return back()
+                ->withErrors(['driver_id' => '所选司机不在您的班次内。'])
+                ->withInput();
         }
 
         $order->update([

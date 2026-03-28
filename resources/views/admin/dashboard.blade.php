@@ -230,6 +230,7 @@
                         $badge = function ($status) {
                             return match (strtolower((string) $status)) {
                                 'pending' => 'bg-amber-50 text-amber-700',
+                                'scheduled' => 'bg-orange-50 text-orange-700',
                                 'assigned' => 'bg-yellow-50 text-yellow-700',
                                 'on_the_way' => 'bg-blue-50 text-blue-700',
                                 'arrived' => 'bg-indigo-50 text-indigo-700',
@@ -268,6 +269,7 @@
                         $statusText = function ($status) {
                             return match (strtolower((string) $status)) {
                                 'pending' => '待派单',
+                                'scheduled' => '预约中',
                                 'assigned' => '已指派',
                                 'on_the_way' => '前往接送',
                                 'arrived' => '已到起点',

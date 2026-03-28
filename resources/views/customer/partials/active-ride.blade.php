@@ -3,6 +3,7 @@
 @else
     @php
         $statusMap = [
+            'scheduled'  => '预约中', 
             'pending' => '等待派单',
             'assigned' => '司机已接单',
             'on_the_way' => '司机正在前往',

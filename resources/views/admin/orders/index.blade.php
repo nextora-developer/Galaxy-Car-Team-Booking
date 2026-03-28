@@ -83,14 +83,21 @@
         // ✅ 文案映射（状态/付款/按钮）
         $statusText = function ($s) {
             return match (strtolower((string) $s)) {
+                // 🟡 待派单
                 'unassigned', 'pending_assign', 'pending' => '待派单',
+                // 🟠 预约单（新增）
+                'scheduled', 'booking', 'reserved' => '预约中',
+                // 🔵 已派单 / 进行中
                 'assigned' => '已指派',
                 'on_the_way' => '前往接送',
                 'arrived' => '已到起点',
                 'in_trip' => '行程中',
                 'ongoing', 'in_progress' => '进行中',
+                // 🟢 完成
                 'completed', 'done' => '已完成',
+                // 🔴 取消
                 'cancelled', 'canceled' => '已取消',
+
                 default => strtoupper((string) $s ?: '—'),
             };
         };
@@ -149,6 +156,9 @@
                     <div class="{{ $label }}">状态</div>
                     <select name="status" class="{{ $ctrl }}">
                         <option value="">全部</option>
+
+                        <option value="scheduled" @selected(($status ?? '') === 'scheduled')>预约中</option> {{-- 👈 新增 --}}
+
                         <option value="pending" @selected(($status ?? '') === 'pending')>待派单</option>
                         <option value="assigned" @selected(($status ?? '') === 'assigned')>已指派</option>
                         <option value="on_the_way" @selected(($status ?? '') === 'on_the_way')>前往接送</option>

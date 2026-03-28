@@ -76,4 +76,9 @@ class User extends Authenticatable
     {
         return $this->full_name ?: $this->name;
     }
+
+    public function driverOrders()
+    {
+        return $this->hasMany(Order::class, 'driver_id');
+    }
 }

@@ -129,24 +129,36 @@
 
                                         $statusClasses = match ($status) {
                                             'pending' => 'bg-amber-50 text-amber-700 border-amber-200',
+
+                                            'scheduled'
+                                                => 'bg-orange-50 text-orange-700 border-orange-200', // 👈 新增（预约）
+
                                             'assigned',
                                             'on_the_way',
                                             'arrived',
                                             'in_trip'
                                                 => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+
                                             'completed' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+
                                             'cancelled' => 'bg-rose-50 text-rose-700 border-rose-200',
+
                                             default => 'bg-slate-50 text-slate-600 border-slate-200',
                                         };
 
                                         $statusLabel = match ($status) {
-                                            'pending' => '待处理',
+                                            'pending' => '待派单',
+
+                                            'scheduled' => '预约中', // 👈 新增
+
                                             'assigned' => '已指派',
                                             'on_the_way' => '前往途中',
                                             'arrived' => '已到达',
                                             'in_trip' => '进行中',
+
                                             'completed' => '已完成',
                                             'cancelled' => '已取消',
+
                                             default => '未知',
                                         };
                                     @endphp

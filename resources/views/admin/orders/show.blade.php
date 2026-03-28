@@ -12,14 +12,20 @@
 
         $statusBadge = function ($s) {
             $s = strtolower((string) $s);
+
             return match ($s) {
                 'pending' => 'bg-amber-50 text-amber-700',
+
+                'scheduled' => 'bg-orange-50 text-orange-700', // 👈 新增（预约）
+
                 'assigned' => 'bg-yellow-50 text-yellow-700',
                 'on_the_way' => 'bg-blue-50 text-blue-700',
                 'arrived' => 'bg-indigo-50 text-indigo-700',
                 'in_trip' => 'bg-violet-50 text-violet-700',
+
                 'completed' => 'bg-green-50 text-green-700',
                 'cancelled' => 'bg-gray-100 text-gray-700',
+
                 default => 'bg-gray-100 text-gray-700',
             };
         };
@@ -47,14 +53,22 @@
         // ✅ 文案映射（状态 / 付款方式 / 付款状态）
         $statusText = function ($s) {
             return match (strtolower((string) $s)) {
+                // 🟡 待派
                 'pending' => '待派单',
+                // 🟠 预约（新增）
+                'scheduled', 'booking', 'reserved' => '预约中',
+                // 🔵 已派 / 进行中
                 'assigned' => '已指派',
                 'on_the_way' => '前往接送',
                 'arrived' => '已到起点',
                 'in_trip' => '行程中',
-                'completed' => '已完成',
-                'cancelled', 'canceled' => '已取消',
+                // 🔵 兼容旧字段
                 'unassigned', 'pending_assign' => '未指派',
+                // 🟢 完成
+                'completed' => '已完成',
+                // 🔴 取消
+                'cancelled', 'canceled' => '已取消',
+
                 default => strtoupper((string) $s ?: '—'),
             };
         };

@@ -78,6 +78,7 @@ class SalesReportExport implements FromQuery, WithHeadings, WithMapping
 
         $statusLabel = match (strtolower((string) $order->status)) {
             'pending' => '待派单',
+            'scheduled'   => '预约中',
             'assigned' => '已派单',
             'on_the_way' => '前往中',
             'arrived' => '已到达',

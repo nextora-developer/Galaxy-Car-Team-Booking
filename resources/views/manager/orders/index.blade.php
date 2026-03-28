@@ -49,6 +49,7 @@
 
         $statusText = fn($v) => match ($v) {
             'pending' => '待派单',
+            'scheduled' => '预约中',
             'assigned' => '已派单',
             'on_the_way' => '司机在路上',
             'arrived' => '司机已到达',

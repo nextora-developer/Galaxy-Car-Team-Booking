@@ -37,13 +37,54 @@
 @section('content')
     @php
         $statusMap = [
-            'pending' => ['label' => '已下单', 'color' => 'bg-slate-100 text-slate-600', 'step' => 1],
-            'assigned' => ['label' => '已派单', 'color' => 'bg-blue-100 text-blue-700', 'step' => 2],
-            'on_the_way' => ['label' => '司机前往中', 'color' => 'bg-amber-100 text-amber-700', 'step' => 3],
-            'arrived' => ['label' => '司机已到达', 'color' => 'bg-orange-100 text-orange-700', 'step' => 4],
-            'in_trip' => ['label' => '行程进行中', 'color' => 'bg-purple-100 text-purple-700', 'step' => 5],
-            'completed' => ['label' => '行程结束', 'color' => 'bg-emerald-100 text-emerald-700', 'step' => 6],
-            'cancelled' => ['label' => '已取消', 'color' => 'bg-rose-100 text-rose-700', 'step' => 0],
+            'scheduled' => [
+                // 👈 新增
+                'label' => '预约中',
+                'color' => 'bg-orange-100 text-orange-700',
+                'step' => 1,
+            ],
+
+            'pending' => [
+                'label' => '已下单',
+                'color' => 'bg-slate-100 text-slate-600',
+                'step' => 2,
+            ],
+
+            'assigned' => [
+                'label' => '已派单',
+                'color' => 'bg-blue-100 text-blue-700',
+                'step' => 3,
+            ],
+
+            'on_the_way' => [
+                'label' => '司机前往中',
+                'color' => 'bg-amber-100 text-amber-700',
+                'step' => 4,
+            ],
+
+            'arrived' => [
+                'label' => '司机已到达',
+                'color' => 'bg-orange-100 text-orange-700',
+                'step' => 5,
+            ],
+
+            'in_trip' => [
+                'label' => '行程进行中',
+                'color' => 'bg-purple-100 text-purple-700',
+                'step' => 6,
+            ],
+
+            'completed' => [
+                'label' => '行程结束',
+                'color' => 'bg-emerald-100 text-emerald-700',
+                'step' => 7,
+            ],
+
+            'cancelled' => [
+                'label' => '已取消',
+                'color' => 'bg-rose-100 text-rose-700',
+                'step' => 0,
+            ],
         ];
         $current = $statusMap[$order->status] ?? $statusMap['pending'];
 
