@@ -61,6 +61,7 @@
     @php
         $when =
             $order->schedule_type === 'scheduled' && $order->scheduled_at ? $order->scheduled_at : $order->created_at;
+
         $payOptions = ['cash' => '现金', 'credit' => '挂单', 'transfer' => '转账'];
     @endphp
 
@@ -310,6 +311,18 @@
         @php
             $canEditAssign = in_array($order->status, ['pending', 'assigned']);
             $canCancelOrder = in_array($order->status, ['pending', 'assigned', 'on_the_way', 'arrived']);
+
+            $serviceTypes = [
+                'big_car' => '大车接送',
+                'small_car' => '小车接送',
+                'airport' => '机场接送',
+                'interstate' => '跨州长途',
+                'designated_driver' => '代驾服务',
+                'purchase' => '跑腿代办',
+                'translator' => '翻译陪同',
+            ];
+
+            $serviceLabel = $serviceTypes[$order->service_type ?? ''] ?? ($order->service_type ?: '未填写');
         @endphp
 
         <div class="lg:col-span-5">
@@ -317,10 +330,18 @@
                 class="bg-slate-900 rounded-[2.5rem] p-8
             shadow-[0_22px_60px_rgba(15,23,42,0.25)]
             sticky top-24">
-                <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center justify-between gap-3 mb-8">
                     <h3 class="text-white text-lg font-black">
                         {{ $order->driver_id ? '编辑派单' : '派单操作' }}
                     </h3>
+
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full 
+             text-sm font-bold uppercase tracking-widest
+             bg-indigo-500/10 border border-indigo-500/20 text-indigo-300
+             backdrop-blur-sm transition-all hover:bg-indigo-500/20">
+                        {{ $serviceLabel }}
+                    </span>
                 </div>
 
                 @unless ($canEditAssign)
@@ -347,7 +368,7 @@
                             @foreach ($drivers as $d)
                                 <option value="{{ $d->id }}"
                                     {{ old('driver_id', $order->driver_id) == $d->id ? 'selected' : '' }}>
-                                    {{ $d->name }} {{ $d->shift ? '(' . ucfirst($d->shift) . ')' : '' }}
+                                    {{ $d->full_name ?? $d->name }} {{ $d->shift ? '(' . ucfirst($d->shift) . ')' : '' }}
                                 </option>
                             @endforeach
                         </select>

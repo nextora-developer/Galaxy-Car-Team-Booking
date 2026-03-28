@@ -110,10 +110,11 @@ class OrderController extends Controller
             }
         }
 
-        $drivers = $driversQuery->get(['id', 'name', 'shift']);
+        $drivers = $driversQuery->get(['id', 'name', 'full_name', 'shift']);
 
         return view('manager.orders.show', compact('order', 'drivers'));
     }
+
     public function assign(Request $request, Order $order)
     {
         $manager = $request->user();

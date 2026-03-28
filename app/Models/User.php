@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CreditLog::class, 'customer_id');
     }
+
+    public function getDisplayNameAttribute()
+    {
+        return $this->full_name ?: $this->name;
+    }
 }
